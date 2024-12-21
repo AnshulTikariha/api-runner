@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Runner</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body style="background: #8c8c92d9;">
+    <div class="container">
+        <h1>API Runner  <span id="historyBtn" style="font-size: 10px; margin-left : 20rem; cursor: pointer;" onclick="window.location.href='api-history.html'">Go To History <i class="fa fa-history"></i></span></h1>
+    
+        <label for="url">API URL</label>
+        <input type="text" id="url" placeholder="Enter API URL" required>
+       
+        <div>
+            <label for="method">HTTP Method</label>
+            <select id="method" required>
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="DELETE">DELETE</option>
+            </select>    
+
+        </div>
+      
+        <div>
+            <label for="headers">Headers (JSON Format) <span style="font-size: 10px; cursor: pointer;"  id="beautifyHeaders">(Beautify)</span></label>
+            <textarea id="headers" class="json-input" placeholder='{"Content-Type":"application/json","Authorization":"Bearer token"}'></textarea>
+            <div id="headersError" class="error"></div>
+        </div>
+        
+        <div>
+            <label for="body">Request Body (JSON Format) <span style="font-size: 10px; cursor: pointer;"   id="beautifyBody">(Beautify)</span></label>
+            <textarea id="body" class="json-input"  placeholder='{"key": "value"}'></textarea>
+            <div id="bodyError" class="error"></div>
+        </div>
+     
+        
+        <label for="iterations">Number of Iterations</label>
+        <input type="number" id="iterations" placeholder="Enter number of times to execute" value="1">
+
+        <label for="interval">Interval (ms)</label>
+        <input type="number" id="interval" placeholder="Enter interval in milliseconds" value="1000">
+
+
+        <button id="send">Send Request</button>
+
+        <div>
+            <h2>Response <i class="fa fa-copy" style="font-size: 18px;margin-left: 12px;cursor: pointer;" onclick="copyToClipboard('responseText')"></i></h2>
+            
+        </div>
+      
+        <div class="response">
+            <pre id="responseText"></pre>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

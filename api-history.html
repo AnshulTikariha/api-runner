@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Hit History</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+
+                /* Style for displaying API response */
+        #responseText {
+            white-space: pre-wrap; /* Preserve newlines in text */
+            margin-top: 20px;
+            font-family: monospace;
+        }
+
+        /* Style for the Clear History button */
+        #clearHistoryBtn {
+            padding: 6px 12px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 10px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+
+        #clearHistoryBtn:hover {
+            background-color: #d32f2f;
+        }
+
+    </style>
+</head>
+<body style="background: #8c8c92d9;">
+    <h1>API Hit History  <span id="clearHistoryBtn" onclick="clearApiHistory()">Clear History</span></h1>
+   
+    <div id="responseText"></div> 
+    <table id="api-history-table">
+        <thead>
+            <tr>
+                <th>API URL</th>
+                <th>Timestamp</th>
+                <th>Status</th>
+                <th>Response</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- History entries will go here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Function to render API hit history on the page
+        function renderApiHistory() {
+            // Retrieve history from localStorage
+            let apiHistory = JSON.parse(localStorage.getItem('apiHistory')) || [];
+
+            // Get reference to the table body
+            const tbody = document.getElementById('api-history-table').getElementsByTagName('tbody')[0];
+
+            // Clear any existing rows
+            tbody.innerHTML = '';
+
+            // Add rows for each API hit history entry
+            apiHistory.forEach((entry) => {
+                const row = tbody.insertRow();
+
+                // Insert API URL
+                const cell1 = row.insertCell(0);
+                cell1.textContent = entry.apiUrl;
+
+                // Insert Timestamp
+                const cell2 = row.insertCell(1);
+                cell2.textContent = entry.timestamp;
+
+                // Insert Status
+                const cell3 = row.insertCell(2);
+                cell3.textContent = entry.responseStatus;
+
+                // Insert Response
+                const cell4 = row.insertCell(3);
+                cell4.textContent = JSON.stringify(entry.responseBody); // Assuming it's an object, you may format it if necessary
+            });
+
+            if(tbody.innerHTML === '') {
+                const row = tbody.insertRow();
+                const cell = row.insertCell(0);
+                cell.colSpan = 4;
+                cell.textContent = 'No API hit history available.';
+                document.getElementById("clearHistoryBtn").style.display = 'none';
+            }
+        }
+
+        // Render history when the page loads
+        window.onload = renderApiHistory;
+
+        // Example of making an API request and logging the history
+        function makeApiRequest(url) {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    logApiHit(url, { status: 'success', data: data });
+                    renderApiHistory(); // Refresh the table with new data
+                })
+                .catch(error => {
+                    logApiHit(url, { status: 'error', data: error });
+                    renderApiHistory(); // Refresh the table with new data
+                });
+        }
+
+        function clearApiHistory() {
+            localStorage.removeItem('apiHistory');
+            document.getElementById("responseText").textContent += `\nAPI History has been cleared.`;
+            window.setTimeout(() => {
+                renderApiHistory();
+            }, 1000);
+
+            window.setTimeout(() => {
+                document.getElementById("responseText").textContent = '';
+            }, 3000);
+           
+        }
+    </script>
+</body>
+</html>
